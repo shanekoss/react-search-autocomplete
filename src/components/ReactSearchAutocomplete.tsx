@@ -101,7 +101,7 @@ export default function ReactSearchAutocomplete<T>({
       results.length === 0 &&
       !isSearchComplete
     ) {
-      setShowNoResultsFlag(true)
+      setShowNoResultsFlag(false)
     } else {
       setShowNoResultsFlag(false)
     }
@@ -130,12 +130,7 @@ export default function ReactSearchAutocomplete<T>({
   }
 
   const callOnSearch = (keyword: string) => {
-    let newResults: T[] = []
-
-    keyword?.length > 0 && (newResults = fuseResults(keyword))
-
-    setResults(newResults)
-    onSearch(keyword, newResults)
+    onSearch(keyword)
     setIsTyping(false)
   }
 
@@ -154,10 +149,7 @@ export default function ReactSearchAutocomplete<T>({
   }
 
   const fuseResults = (keyword: string) =>
-    fuse
-      .search(keyword, { limit: maxResults })
-      .map((result) => ({ ...result.item }))
-      .slice(0, maxResults)
+    items
 
   const handleSetSearchString = ({ target }: ChangeEvent<HTMLInputElement>) => {
     const keyword = target.value
@@ -172,7 +164,6 @@ export default function ReactSearchAutocomplete<T>({
   }
 
   const eraseResults = () => {
-    setResults([])
     setIsSearchComplete(true)
   }
 
@@ -241,7 +232,7 @@ export default function ReactSearchAutocomplete<T>({
             maxLength={maxLength}
           />
           <Results
-            results={results}
+            results={items}
             onClick={handleOnClick}
             setSearchString={setSearchString}
             showIcon={showIcon}
